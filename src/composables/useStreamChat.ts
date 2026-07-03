@@ -1,4 +1,5 @@
 import { computed, ref } from "vue";
+import { apiUrl } from "../lib/apiBase";
 import type { ChatMessage, ChatStreamRequest, StreamEvent, StreamStatus } from "../types";
 
 interface StartStreamOptions {
@@ -213,7 +214,7 @@ export function useStreamChat() {
     lastError.value = "";
     status.value = "thinking";
 
-    await connectStream("/api/chat/stream", {
+    await connectStream(apiUrl("/api/chat/stream"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(request),
@@ -228,7 +229,7 @@ export function useStreamChat() {
 
     status.value = "paused";
     if (currentRunId.value) {
-      void fetch(`/api/chat/runs/${encodeURIComponent(currentRunId.value)}/pause`, { method: "POST" });
+      void fetch(apiUrl(`/api/chat/runs/${encodeURIComponent(currentRunId.value)}/pause`), { method: "POST" });
     }
     const activeController = controller.value;
     if (activeController) {
@@ -254,7 +255,7 @@ export function useStreamChat() {
       runId: currentRunId.value,
       lastEventId: String(lastEventId.value),
     });
-    await connectStream(`/api/chat/stream/resume?${query.toString()}`);
+    await connectStream(apiUrl(`/api/chat/stream/resume?${query.toString()}`));
   }
 
   // 主动断开当前网络连接；后端 run 仍会缓存，方便用户点击“重连”恢复。
@@ -285,7 +286,7 @@ export function useStreamChat() {
       runId: currentRunId.value,
       lastEventId: String(lastEventId.value),
     });
-    await connectStream(`/api/chat/stream/resume?${query.toString()}`);
+    await connectStream(apiUrl(`/api/chat/stream/resume?${query.toString()}`));
   }
 
   // 统一处理异常，让页面层逻辑更薄。
