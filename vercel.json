@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://chat-llm-murex.vercel.app/api/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://chat-llm-murex.vercel.app/health"
+    }
+  ]
+}
